@@ -1,10 +1,43 @@
 from pydantic import BaseModel
+from typing import List
 
 # response_model = response schema
-class Blog(BaseModel):
+class BlogBase(BaseModel):
     title:str
     body: str
 
-class ShowBlog(Blog):
+class Blog(BlogBase):
     class Config():
-        orm_mode = True
+        from_attributes = True    
+        
+class User(BaseModel):
+    name:str
+    email:str
+    password:str
+    
+class ShowUser(User):
+    name:str
+    email:str
+    blogs: List[Blog] = []
+    class Config():
+        from_attributes = True
+        
+
+
+class ShowBlog(Blog):
+    creator : ShowUser
+    class Config():
+        from_attributes = True
+        
+class Login(BaseModel):
+    username:str
+    password:str
+    
+    
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    email: str | None = None
